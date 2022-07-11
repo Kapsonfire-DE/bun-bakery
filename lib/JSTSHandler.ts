@@ -1,6 +1,6 @@
 import * as path from "path";
-import {Router} from "./Router";
 import type {IHandler} from "./IHandler";
+import {RouterMethods} from "./RouterMethods";
 
 const JSTSHandler : IHandler = {
     addRoute: async function (routeFile: string): Promise<object> {
@@ -9,7 +9,7 @@ const JSTSHandler : IHandler = {
             let parsed = (path.parse(routeFile));
             if (parsed.ext === '.ts' || parsed.ext === '.js') {
                 let importedRoute = await import(routeFile);
-                Router.ALLOWED_METHODS.forEach(method => {
+                RouterMethods.forEach(method => {
                     if (typeof importedRoute[method] !== 'undefined') {
                         routerObject[method] = importedRoute[method];
                     }

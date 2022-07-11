@@ -6,6 +6,7 @@ import {Context} from "./Context";
 import JSTSHandler from "./JSTSHandler";
 import {IHandler} from "./IHandler";
 import StaticFilesHandler from "./StaticFilesHandler";
+import {RouterMethods} from "./RouterMethods";
 
 
 function* walkSync(dir) {
@@ -40,13 +41,7 @@ export class Router {
 
     private router = {};
 
-    static readonly ALLOWED_METHODS = [
-        'POST',
-        'GET',
-        'DELETE',
-        'PUT',
-        'ANY'
-    ];
+    static readonly ALLOWED_METHODS = RouterMethods;
 
     public EXT_WEIGHTS = {
         '.ts': 100,
