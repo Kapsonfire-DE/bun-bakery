@@ -1,5 +1,3 @@
-import * as path from "path";
-import {Router} from "./Router";
 import type {IHandler} from "./IHandler";
 import {Context} from "./Context";
 import {file} from "bun";

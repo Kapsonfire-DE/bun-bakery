@@ -46,18 +46,19 @@ export class Router {
         'DELETE',
         'PUT',
         'ANY'
-    ]
+    ];
+
     public EXT_WEIGHTS = {
         '.ts': 100,
         '.js': 99
-    }
+    };
 
     private EXT_HANDLER: { [key: string]: IHandler } = {
         '.ts': JSTSHandler,
         '.js': JSTSHandler,
         '.html': StaticFilesHandler,
         '.json': StaticFilesHandler,
-    }
+    };
 
 
 
