@@ -1,6 +1,6 @@
 {
   "name": "bun-bakery",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Dennis Dudek <admin@kapsonfire.de>",
   "repository": {
     "type": "git",
@@ -19,5 +19,6 @@
     "web",
     "server",
     "http"
-  ]
+  ],
+  "main": "lib/index.ts"
 }
