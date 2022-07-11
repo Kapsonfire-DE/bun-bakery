@@ -1,4 +1,4 @@
-import {Router} from "bun-bakery"
+import {Router} from "@kapsonfire/bun-bakery"
 import MarkdownHandler from "./lib/MarkdownHandler";
 import MustacheHandler from "./lib/MustacheHandler";
 

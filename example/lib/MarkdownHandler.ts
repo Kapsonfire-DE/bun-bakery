@@ -1,4 +1,4 @@
-import { Context, IHandler } from "bun-bakery"
+import { Context, IHandler } from "@kapsonfire/bun-bakery"
 import MarkdownIt from "markdown-it";
 
 const md = new MarkdownIt();

@@ -1,4 +1,4 @@
-import { Context, IHandler } from "bun-bakery"
+import { Context, IHandler } from "@kapsonfire/bun-bakery"
 import Mustache from "mustache";
 
 
