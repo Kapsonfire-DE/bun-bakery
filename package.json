@@ -1,6 +1,6 @@
 {
   "type": "module",
-  "name": "bun-bakery",
+  "name": "@kapsonfire/bun-bakery",
   "version": "0.1.6",
   "author": "Dennis Dudek <admin@kapsonfire.de>",
   "repository": {
