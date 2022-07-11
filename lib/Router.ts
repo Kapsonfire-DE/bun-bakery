@@ -32,7 +32,7 @@ export type RouterConfig = {
     port?: number;
     routesPath?: string;
     assetsPath?: string;
-    customHandlers: { [key: string]: IHandler }
+    customHandlers?: { [key: string]: IHandler }
 }
 
 
