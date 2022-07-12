@@ -1,8 +1,8 @@
-![](https://img.shields.io/npm/l/@kapsonfire/bun-bakery?color=red&style=flat-square)
-![](https://img.shields.io/npm/v/@kapsonfire/bun-bakery?color=red&style=flat-square)
-![](https://img.shields.io/bundlephobia/min/@kapsonfire/bun-bakery?color=red&style=flat-square)
-![](https://img.shields.io/npm/dw/@kapsonfire/bun-bakery?color=red&style=flat-square)
-![](https://img.shields.io/npm/dt/@kapsonfire/bun-bakery?color=red&style=flat-square)
+[![](https://img.shields.io/npm/l/@kapsonfire/bun-bakery?color=red&style=flat-square)](https://www.npmjs.com/package/@kapsonfire/bun-bakery)
+[![](https://img.shields.io/npm/v/@kapsonfire/bun-bakery?color=red&style=flat-square)](https://www.npmjs.com/package/@kapsonfire/bun-bakery)
+[![](https://img.shields.io/bundlephobia/min/@kapsonfire/bun-bakery?color=red&style=flat-square)](https://www.npmjs.com/package/@kapsonfire/bun-bakery)
+[![](https://img.shields.io/npm/dw/@kapsonfire/bun-bakery?color=red&style=flat-square)](https://www.npmjs.com/package/@kapsonfire/bun-bakery)
+[![](https://img.shields.io/npm/dt/@kapsonfire/bun-bakery?color=red&style=flat-square)](https://www.npmjs.com/package/@kapsonfire/bun-bakery)
 # Bun Bakery
 
 **Bun-Bakery** is a web framework for Bun. It uses a file based router in style like svelte-kit. No need to define routes during runtime.
