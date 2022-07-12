@@ -6,7 +6,7 @@ const StaticFilesHandler : IHandler = {
     addRoute: async function (routeFile: string): Promise<object> {
         let routerObject = {};
         routerObject['ANY'] = (ctx: Context) => {
-            ctx.sendResponse(new Response(file(routeFile)));
+            ctx.sendFile(routeFile);
         };
         return routerObject;
     },
