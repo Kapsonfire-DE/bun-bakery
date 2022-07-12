@@ -3,7 +3,7 @@ export class Context {
 
     request: Request;
     response: Response | null;
-    params: { [key: string]: string };
+    params: { [key: string]: string|string[] };
 
     readonly method: string;
     readonly headers: Request["headers"];

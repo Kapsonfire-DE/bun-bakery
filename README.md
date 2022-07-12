@@ -48,6 +48,23 @@ export async function GET(ctx: Context) {
 ``` 
 will output `hello kapsonfire!`
 
+### Spread Paramaters
+Routes can also have wildcard/spread paramaters.
+In example: given `routes/users/[...usernames].ts` and open `http://localhost:3000/users/kapsonfire/jarred/tricked`
+```typescript
+import {Context} from "@kapsonfire/bun-bakery"
+
+export async function GET(ctx: Context) {
+    ctx.sendResponse(new Response(JSON.stringify(ctx.params)));
+}
+``` 
+
+will output 
+```json
+{"usernames":["kapsonfire","jarred","tricked"]}
+``` 
+
+
 
 ### Handlers
 Inside the context variable you can access the native bun `Request` object inside `ctx.request`.
