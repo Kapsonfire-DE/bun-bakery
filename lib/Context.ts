@@ -1,3 +1,5 @@
+import {deepmerge} from "deepmerge-ts";
+
 export class Context {
 
 
@@ -31,5 +33,21 @@ export class Context {
 
     sendResponse(res: Response): void {
         this.response = res;
+    }
+
+    sendHTML(htmlCode: string, init: ResponseInit = {}): void {
+        this.response = new Response(htmlCode, deepmerge(init, { headers: {
+                'Content-Type': 'text/html'
+            }}));
+    }
+
+    sendAsJson(data: any, init: ResponseInit = {}): void {
+        this.response = new Response(JSON.stringify(data), deepmerge(init, { headers: {
+                'Content-Type': 'application/json'
+            }}));
+    }
+
+    sendFile(path: string, init: ResponseInit = {}): void {
+        this.response = new Response(Bun.file(path), init);
     }
 }
