@@ -1,3 +1,5 @@
 .idea/
 example/
 test/
+tsconfig.json
+bun.lockb
