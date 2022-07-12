@@ -19,7 +19,9 @@
     "bun",
     "web",
     "server",
-    "http"
+    "http",
+    "router"
   ],
-  "main": "lib/index.ts"
+  "main": "lib/index.ts",
+  "types": "lib/index.ts"
 }

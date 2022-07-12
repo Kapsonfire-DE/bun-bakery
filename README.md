@@ -3,6 +3,13 @@
 [![](https://img.shields.io/bundlephobia/min/@kapsonfire/bun-bakery?color=red&style=flat-square)](https://www.npmjs.com/package/@kapsonfire/bun-bakery)
 [![](https://img.shields.io/npm/dw/@kapsonfire/bun-bakery?color=red&style=flat-square)](https://www.npmjs.com/package/@kapsonfire/bun-bakery)
 [![](https://img.shields.io/npm/dt/@kapsonfire/bun-bakery?color=red&style=flat-square)](https://www.npmjs.com/package/@kapsonfire/bun-bakery)
+
+<div align="center">
+
+![](https://user-images.githubusercontent.com/67053124/178574093-60d51387-0f65-4c64-a29b-b8c5baefde7e.png)
+
+</div>
+
 # Bun Bakery
 
 **Bun-Bakery** is a web framework for Bun. It uses a file based router in style like svelte-kit. No need to define routes during runtime.
