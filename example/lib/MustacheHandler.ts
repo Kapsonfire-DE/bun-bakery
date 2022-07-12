@@ -8,13 +8,13 @@ const MustacheHandler: IHandler = {
         let routerObject = {};
         routerObject['ANY'] = async (ctx: Context) => {
             let fileSrc: string = await Bun.file(routeFile).text();
-            ctx.sendResponse(new Response(
+            ctx.sendHTML(
                 Mustache.render(fileSrc, {...ctx.params}), {
                     headers: {
                         'content-type': 'text/html'
                     }
                 }
-            ));
+            );
         };
         return routerObject;
     },
