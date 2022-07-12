@@ -1,3 +1,7 @@
+![](https://img.shields.io/npm/v/@kapsonfire/ban-bakery?style=flat-square?label=version)
+![](https://img.shields.io/bundlephobia/minzip/@kapsonfire/ban-bakery?style=flat-square%label=size)
+![](https://img.shields.io/npm/dw/@kapsonfire/ban-bakery?label=downloads%20%weekly%29&style=flat-square)
+![](https://img.shields.io/npm/dt/@kapsonfire/ban-bakery?label=downloads%20%28total%29&style=flat-square)
 # Bun Bakery
 
 **Bun-Bakery** is a web framework for Bun. It uses a file based router in style like svelte-kit. No need to define routes during runtime.
