@@ -12,7 +12,7 @@
 
 # Bun Bakery
 
-**Bun-Bakery** is a web framework for Bun. It uses a file based router in style like svelte-kit. No need to define routes during runtime.
+**Bun-Bakery** is a web framework for [Bun](https://github.com/oven-sh/bun). It uses a file based router in style like svelte-kit. No need to define routes during runtime.
 
 
 ## Quick Start

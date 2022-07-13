@@ -7,6 +7,7 @@ import {IHandler} from "./IHandler";
 import StaticFilesHandler from "./StaticFilesHandler";
 import {RouterMethods} from "./RouterMethods";
 import {FileInfo} from "./FileInfo";
+import {IMiddleware} from "./IMiddleware";
 
 
 function* walkSync(dir) {
@@ -174,9 +175,31 @@ export class Router {
 
     }
 
+
+
+    public addMiddleware(middleware: IMiddleware) {
+        Object.keys(this.middlewares).forEach(state => {
+            if(typeof middleware[state] === "function") {
+                this.middlewares[state].add(middleware);
+            }
+        })
+    }
+
+    private middlewares = {
+        onRequest: new Set<IMiddleware>(),
+        onRoute: new Set<IMiddleware>(),
+        onResponse: new Set<IMiddleware>(),
+    }
+
     private async serve(req: Request): Promise<Response> {
         const routes = Object.keys(this.router);
         const context = new Context(req);
+
+        for(const middleware of Array.from(this.middlewares.onRequest.values())) {
+            await middleware.onRequest(context)
+        }
+
+
 
         if (context.path.startsWith('/assets/')) {
             let resFile = path.parse(context.path);
@@ -217,7 +240,7 @@ export class Router {
                 let regexp = new RegExp(`^${route}$`);
                 let matcher = context.path.match(regexp);
                 if (matcher) {
-                    context.params = matcher.groups;
+                    context.params = deepmerge(context.params, matcher.groups);
                     Object.keys(context.params).forEach(key => {
                         if (context.params[key].indexOf('/') >= 0) {
                             context.params[key] = (context.params[key] as string).split('/').filter(a => a !== '');
@@ -233,7 +256,13 @@ export class Router {
             }
         }
         if (router !== null) {
+            for(const middleware of Array.from(this.middlewares.onRoute.values())) {
+                await middleware.onRoute(context)
+            }
             await router(context);
+            for(const middleware of Array.from(this.middlewares.onResponse.values())) {
+                await middleware.onResponse(context)
+            }
             return context.response ?? new Response('Unknown error', {status: 500});
         }
 
