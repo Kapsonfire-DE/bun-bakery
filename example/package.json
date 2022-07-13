@@ -1,1 +1,1 @@
-{ "dependencies": { "@kapsonfire/bun-bakery": "^0.1.8", "markdown-it": "^13.0.1", "mustache": "^4.2.0" } }
+{ "dependencies": { "@kapsonfire/bun-bakery": "^0.1.9", "markdown-it": "^13.0.1", "mustache": "^4.2.0" } }

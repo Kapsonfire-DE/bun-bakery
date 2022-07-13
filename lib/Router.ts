@@ -6,6 +6,7 @@ import JSTSHandler from "./JSTSHandler";
 import {IHandler} from "./IHandler";
 import StaticFilesHandler from "./StaticFilesHandler";
 import {RouterMethods} from "./RouterMethods";
+import {FileInfo} from "./FileInfo";
 
 
 function* walkSync(dir) {
@@ -179,9 +180,22 @@ export class Router {
 
         if (context.path.startsWith('/assets/')) {
             let resFile = path.parse(context.path);
-            let filePath = this.config.assetsPath + resFile.dir.substring('/assets'.length) + '/' + resFile.name;
-            if (fs.existsSync(filePath)) {
-                return new Response(Bun.file(filePath));
+            let filePath = this.config.assetsPath + resFile.dir.substring('/assets'.length) + resFile.name;
+            let fileInfo = FileInfo.getInfo(filePath);
+            if (fileInfo) {
+                const etag = `W/"${fileInfo.size}-${fileInfo.mtime.getTime()}"`;
+                if(req.headers.has('If-None-Match')) {
+                    if(req.headers.get('If-None-Match') === etag) {
+                        return new Response(null, {
+                            status: 304
+                        });
+                    }
+                }
+                const headers = new Headers();
+                headers.set('ETag', etag);
+                return new Response(Bun.file(filePath), {
+                    headers: headers
+                });
             } else {
                 return new Response('File not found.', {
                     status: 404

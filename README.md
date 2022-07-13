@@ -66,7 +66,7 @@ In example: given `routes/users/[...usernames].ts` and open `http://localhost:30
 import {Context} from "@kapsonfire/bun-bakery"
 
 export async function GET(ctx: Context) {
-    ctx.sendResponse(new Response(JSON.stringify(ctx.params)));
+    ctx.sendAsJson(JSON.stringify(ctx.params));
 }
 ``` 
 
