@@ -3,3 +3,4 @@ example/
 test/
 tsconfig.json
 bun.lockb
+lib/*.js
