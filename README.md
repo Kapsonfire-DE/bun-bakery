@@ -2,7 +2,8 @@
 [![](https://img.shields.io/npm/v/@kapsonfire/bun-bakery?color=red&style=flat-square)](https://www.npmjs.com/package/@kapsonfire/bun-bakery)
 [![](https://img.shields.io/npm/dw/@kapsonfire/bun-bakery?color=red&style=flat-square)](https://www.npmjs.com/package/@kapsonfire/bun-bakery)
 [![](https://img.shields.io/npm/dt/@kapsonfire/bun-bakery?color=red&style=flat-square)](https://www.npmjs.com/package/@kapsonfire/bun-bakery)
-
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=Kapsonfire-DE_bun-bakery&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=Kapsonfire-DE_bun-bakery)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=Kapsonfire-DE_bun-bakery&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=Kapsonfire-DE_bun-bakery)
 <div align="center">
 
 ![](https://user-images.githubusercontent.com/67053124/178574093-60d51387-0f65-4c64-a29b-b8c5baefde7e.png)
