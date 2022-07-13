@@ -11,5 +11,5 @@ export {
     Router, Context, RouterMethods, FileInfo
 }
 export type {
-    IHandler, IFileInfo
+    IHandler, IFileInfo, IMiddleware
 }
