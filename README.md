@@ -80,3 +80,21 @@ will output
 ### Handlers
 Inside the context variable you can access the native bun `Request` object inside `ctx.request`.
 `ctx.sendResponse` expects a native bun `Response` object.
+
+
+## Middlewares
+bun-bakery supports some life-cycles to add middleware
+* **onRequest** `will be called before the router handles the request`
+* **onRoute** `will be called before the route function will be called`
+* **onResponse** `will be called after the route function finished`
+
+```typescript
+router.addMiddleware({
+    onRequest: (ctx: Context) => { ctx.params.injected = "1"; console.log('onRequest', ctx) },
+    onRoute: (ctx: Context) => console.log('onRoute', ctx),
+    onResponse: (ctx: Context) => {
+        ctx.response.headers.set('content-type', 'application/jsonx');
+        console.log('onResponse', ctx)
+    },
+});
+```
