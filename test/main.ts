@@ -1,4 +1,4 @@
-import {Router} from "../lib"
+import {Context, Router} from "../lib"
 
 
 const router = new Router({
@@ -8,9 +8,9 @@ const router = new Router({
 })
 
 router.addMiddleware({
-    onRequest: (ctx) => { ctx.params.injected = "1"; console.log('onRequest', ctx) },
-    onRoute: (ctx) => console.log('onRoute', ctx),
-    onResponse: (ctx) => {
+    onRequest: (ctx: Context) => { ctx.params.injected = "1"; console.log('onRequest', ctx) },
+    onRoute: (ctx: Context) => console.log('onRoute', ctx),
+    onResponse: (ctx: Context) => {
         ctx.response.headers.set('content-type', 'application/jsonx');
         console.log('onResponse', ctx)
     },
