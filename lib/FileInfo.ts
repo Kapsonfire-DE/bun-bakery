@@ -2,7 +2,7 @@ import * as fs from "fs";
 import {Stats} from "fs";
 
 export type IFileInfo = Stats & {
-
+    weakEtag: string
 };
 export class FileInfo {
     private static cache : { [key: string]: IFileInfo } = {};
@@ -12,8 +12,8 @@ export class FileInfo {
             return this.cache[path];
         }
         if(fs.existsSync(path)) {
-            let info = fs.statSync(path);
-
+            let info = (fs.statSync(path) as IFileInfo);
+            info.weakEtag = `W/"${info.size}-${info.mtime.getTime()}"`;
             if(info.isDirectory()) {
                 return null;
             }

@@ -183,16 +183,15 @@ export class Router {
             let filePath = this.config.assetsPath + resFile.dir.substring('/assets'.length) + resFile.name;
             let fileInfo = FileInfo.getInfo(filePath);
             if (fileInfo) {
-                const etag = `W/"${fileInfo.size}-${fileInfo.mtime.getTime()}"`;
                 if(req.headers.has('If-None-Match')) {
-                    if(req.headers.get('If-None-Match') === etag) {
+                    if(req.headers.get('If-None-Match') === fileInfo.weakEtag) {
                         return new Response(null, {
                             status: 304
                         });
                     }
                 }
                 const headers = new Headers();
-                headers.set('ETag', etag);
+                headers.set('ETag', fileInfo.weakEtag);
                 return new Response(Bun.file(filePath), {
                     headers: headers
                 });
