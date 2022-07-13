@@ -1,7 +1,6 @@
 import * as path from "path";
 import * as fs from "fs";
 import {deepmerge} from "deepmerge-ts";
-import {file, serve, Server} from "bun";
 import {Context} from "./Context";
 import JSTSHandler from "./JSTSHandler";
 import {IHandler} from "./IHandler";
@@ -160,7 +159,7 @@ export class Router {
         }
         this.EXT_HANDLER = {...this.EXT_HANDLER, ...this.config.customHandlers};
 
-        this.bake().then(r => this.listen());
+        this.bake().then(_r => this.listen());
     }
 
     async listen() {
@@ -182,7 +181,7 @@ export class Router {
             let resFile = path.parse(context.path);
             let filePath = this.config.assetsPath + resFile.dir.substring('/assets'.length) + '/' + resFile.name;
             if (fs.existsSync(filePath)) {
-                return new Response(file(filePath));
+                return new Response(Bun.file(filePath));
             } else {
                 return new Response('File not found.', {
                     status: 404

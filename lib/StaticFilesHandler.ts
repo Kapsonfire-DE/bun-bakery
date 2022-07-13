@@ -1,6 +1,5 @@
 import type {IHandler} from "./IHandler";
 import {Context} from "./Context";
-import {file} from "bun";
 
 const StaticFilesHandler : IHandler = {
     addRoute: async function (routeFile: string): Promise<object> {
