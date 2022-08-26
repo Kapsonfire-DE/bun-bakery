@@ -8,7 +8,7 @@ import StaticFilesHandler from "./StaticFilesHandler";
 import {RouterMethods} from "./RouterMethods";
 import {FileInfo} from "./FileInfo";
 import {IMiddleware} from "./IMiddleware";
-
+import TRouter from './TrekRouter';
 
 function* walkSync(dir) {
     const files = fs.readdirSync(dir, {withFileTypes: true});
@@ -42,6 +42,7 @@ export class Router {
 
     private router = {};
 
+    private trouter = new TRouter();
     static readonly ALLOWED_METHODS = RouterMethods;
 
     public EXT_WEIGHTS = {
@@ -65,6 +66,15 @@ export class Router {
     }
 
 
+    public static tReplaceParams(route: string): string {
+        const regexSpread = /\[\.\.\.(\w*)\]/gm;
+        const substSpread = `*$1`;
+        const regex = /\[(\w+)\]/gm;
+        const subst = `:$1`;
+        return route.replace(regex, subst).replace(regexSpread, substSpread);
+    }
+
+
     public static replaceParams(route: string): string {
         const regexSpread = /\[\.\.\.(\w*)\]/gm;
         const substSpread = `(?<$1>.*)`;
@@ -81,75 +91,67 @@ export class Router {
 
         let router = {};
 
-        files.forEach(file => {
 
-            let parsed = path.parse(file);
-            let base = parsed.base;
-            let basedir = parsed.dir.substring(this.config.routesPath.length) + '/';
+        for(let i = 0; i < files.length; i++) {
+           let file = files[i];
 
 
-            let routePath = basedir + base;
-            routePath = Router.replaceParams(routePath);
+                let parsed = path.parse(file);
+                let base = parsed.base;
 
 
-            if ((this.EXT_HANDLER[parsed.ext]?.withoutExtension) ?? false) {
-                if (typeof routes[routePath] === 'undefined') {
-                    routes[routePath] = [file];
-                } else {
-                    routes[routePath].push(file);
-                }
-            }
-
-            if ((this.EXT_HANDLER[parsed.ext]?.withExtension) ?? false) {
-                if (typeof routes[routePath + parsed.ext] === 'undefined') {
-                    routes[routePath + parsed.ext] = [file];
-                } else {
-                    routes[routePath + parsed.ext].push(file);
-                }
-            }
+                let basedir = parsed.dir.substring(this.config.routesPath.length) + '/';
 
 
-            if (base === 'index') {
-                basedir = Router.replaceParams(basedir.substring(0, basedir.length - 1));
-                if (basedir.length === 0) basedir = '/';
-                if (typeof routes[basedir] === 'undefined') {
-                    routes[basedir] = [file];
-                } else {
-                    routes[basedir].push(file);
-                }
-            }
+                let routePath = basedir + base;
 
-        });
-        let keys = Object.keys(routes);
 
-        for (let i = 0; i < keys.length; i++) {
-            let route = keys[i];
-            let files = routes[route];
+                routePath = Router.tReplaceParams(routePath);
+                let indexRoutePath = null;
 
-            if (files.length === 0) continue;
+                if (this.EXT_HANDLER[parsed.ext]) {
 
-            if (files.length > 1) {
-                let checkWeight = -1;
-                files.forEach(file => {
-                    let weight = this.EXT_WEIGHTS[(path.parse(file)).ext] ?? 0;
-                    if (checkWeight < weight) {
-                        checkWeight = weight;
-                        routes[route] = [file];
+
+                    let ro = await this.EXT_HANDLER[parsed.ext].addRoute(file);
+
+                    if ((this.EXT_HANDLER[parsed.ext]?.withExtension) ?? false) {
+                        RouterMethods.forEach(method => {
+                            if(ro[method]) {
+                                this.trouter.add(method, routePath + parsed.ext, ro[method]);
+                            }
+                        })
                     }
-                });
+                    if ((this.EXT_HANDLER[parsed.ext]?.withoutExtension) ?? false) {
+                        RouterMethods.forEach(method => {
+                            if(ro[method]) {
+                                if(base === 'index') {
+                                    let len = routePath.length;
+                                    indexRoutePath = routePath.substring(0,len - (len>6?6:5));
+                                    this.trouter.add(method, indexRoutePath, ro[method])
+                                }
+                                this.trouter.add(method, routePath, ro[method])
+                            }
+                        })
+                    }
+                }
+
+
+
+
+
+
+                if (base === 'index') {
+                    basedir = Router.tReplaceParams(basedir.substring(0, basedir.length - 1));
+
+                    if (basedir.length === 0) basedir = '/';
+                    if (typeof routes[basedir] === 'undefined') {
+                        routes[basedir] = [file];
+                    } else {
+                        routes[basedir].push(file);
+                    }
+                }
 
             }
-
-            let file = routes[route][0];
-
-            let ext = path.parse(file).ext;
-            if (typeof this.EXT_HANDLER[ext] !== 'undefined') {
-                router[route] = await this.EXT_HANDLER[ext].addRoute(file);
-            }
-        }
-
-        this.router = router;
-
     }
 
     constructor(options: RouterConfig) {
@@ -226,50 +228,30 @@ export class Router {
         }
 
         let router = null;
+        router = this.trouter.find(context.method as any , context.path);
+        if(router[0]) {
 
-
-        if (routes.indexOf(context.path) >= 0) {
-            if (typeof this.router[context.path][context.method] !== 'undefined' || typeof this.router[context.path]['ANY'] !== 'undefined') {
-                router = this.router[context.path][context.method] ?? this.router[context.path]['ANY'];
-            } else {
-                return new Response('Method not allowed', {status: 405})
-            }
-        } else {
-            for (let i = 0; i < routes.length; i++) {
-                let route = routes[i];
-                let regexp = new RegExp(`^${route}$`);
-                let matcher = context.path.match(regexp);
-                if (matcher) {
-                    context.params = deepmerge(context.params, matcher.groups);
-                    Object.keys(context.params).forEach(key => {
-                        if (context.params[key].indexOf('/') >= 0) {
-                            context.params[key] = (context.params[key] as string).split('/').filter(a => a !== '');
-                        }
-                    })
-                    if (typeof this.router[route][context.method] !== 'undefined' || typeof this.router[route]['ANY'] !== 'undefined') {
-                        router = this.router[route][context.method] ?? this.router[route]['ANY'];
-                        break;
-                    } else {
-                        return new Response('Method not allowed', {status: 405})
-                    }
+            router[1].forEach(([n,v]) => {
+                if(n[0] === '*') {
+                    v = v.split('/');
+                    n = n.substring(n.length>1?1:0);
                 }
-            }
-        }
-        if (router !== null) {
+                context.params[n] = v
+            });
+
             for(const middleware of Array.from(this.middlewares.onRoute.values())) {
                 await middleware.onRoute(context)
             }
-            await router(context);
+            await router[0](context);
             for(const middleware of Array.from(this.middlewares.onResponse.values())) {
                 await middleware.onResponse(context)
             }
             return context.response ?? new Response('Unknown error', {status: 500});
+        } else {
+            return new Response('File not found.', {
+                status: 404
+            });
         }
-
-
-        return new Response('File not found.', {
-            status: 404
-        });
     }
 }
 
