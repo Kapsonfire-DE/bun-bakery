@@ -9,7 +9,7 @@ import {RouterMethods} from "./RouterMethods";
 import {FileInfo} from "./FileInfo";
 import {IMiddleware} from "./IMiddleware";
 import TRouter from './TrekRouter';
-
+import { run, bench, baseline } from "mitata";
 function* walkSync(dir) {
     const files = fs.readdirSync(dir, {withFileTypes: true});
     for (const file of files) {
@@ -74,14 +74,6 @@ export class Router {
         return route.replace(regex, subst).replace(regexSpread, substSpread);
     }
 
-
-    public static replaceParams(route: string): string {
-        const regexSpread = /\[\.\.\.(\w*)\]/gm;
-        const substSpread = `(?<$1>.*)`;
-        const regex = /\[(\w+)\]/gm;
-        const subst = `(?<$1>[^\\/]+)`;
-        return route.replace(regex, subst).replace(regexSpread, substSpread);
-    }
 
     private async bake(): Promise<void> {
         let files = await getFiles(this.config.routesPath);
@@ -193,14 +185,18 @@ export class Router {
         onResponse: new Set<IMiddleware>(),
     }
 
+
+
+    private static readonly ERROR500 = new Response('Unknown error', {status: 500});
+    private static readonly ERROR404 = new Response('File not found.', {status: 404});
     private async serve(req: Request): Promise<Response> {
-        const routes = Object.keys(this.router);
         const context = new Context(req);
 
-        for(const middleware of Array.from(this.middlewares.onRequest.values())) {
-            await middleware.onRequest(context)
+        if(this.middlewares.onRoute.onRequest > 0) {
+            for (const middleware of Array.from(this.middlewares.onRequest.values())) {
+                await middleware.onRequest(context)
+            }
         }
-
 
 
         if (context.path.startsWith('/assets/')) {
@@ -227,31 +223,34 @@ export class Router {
             }
         }
 
-        let router = null;
-        router = this.trouter.find(context.method as any , context.path);
+        let router = this.trouter.find(context.method as any , context.path);
         if(router[0]) {
-
             router[1].forEach(([n,v]) => {
                 if(n[0] === '*') {
-                    v = v.split('/');
+                    v = v.split('/') as any;
                     n = n.substring(n.length>1?1:0);
                 }
                 context.params[n] = v
             });
 
-            for(const middleware of Array.from(this.middlewares.onRoute.values())) {
-                await middleware.onRoute(context)
+            if(this.middlewares.onRoute.size > 0) {
+                for(const middleware of Array.from(this.middlewares.onRoute.values())) {
+                    await middleware.onRoute(context)
+                }
             }
+
             await router[0](context);
-            for(const middleware of Array.from(this.middlewares.onResponse.values())) {
-                await middleware.onResponse(context)
+
+            if(this.middlewares.onResponse.size > 0) {
+                for (const middleware of Array.from(this.middlewares.onResponse.values())) {
+                    await middleware.onResponse(context)
+                }
             }
             return context.response ?? new Response('Unknown error', {status: 500});
         } else {
-            return new Response('File not found.', {
-                status: 404
-            });
+            return Router.ERROR404;
         }
+
     }
 }
 

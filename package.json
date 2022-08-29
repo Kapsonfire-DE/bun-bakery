@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@kapsonfire/bun-bakery",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": "Dennis Dudek <admin@kapsonfire.de>",
   "repository": {
     "type": "git",
@@ -10,7 +10,8 @@
   "description": "A file based router system for bun",
   "license": "MIT",
   "dependencies": {
-    "deepmerge-ts": "^4.2.1"
+    "deepmerge-ts": "^4.2.1",
+    "mitata": "^0.1.6"
   },
   "devDependencies": {
     "bun-types": "^0.1.8"
