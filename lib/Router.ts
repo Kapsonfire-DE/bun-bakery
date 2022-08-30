@@ -189,6 +189,11 @@ export class Router {
 
     private static readonly ERROR500 = new Response('Unknown error', {status: 500});
     private static readonly ERROR404 = new Response('File not found.', {status: 404});
+
+    private static_responses = {};
+
+
+
     private async serve(req: Request): Promise<Response> {
         const context = new Context(req);
 
@@ -198,6 +203,17 @@ export class Router {
             }
         }
 
+        if(this.static_responses[context.path]) {
+            let response = this.static_responses[context.path];
+            if(req.headers.has('If-None-Match')) {
+                if(req.headers.get('If-None-Match') === response.headers.get('ETag')) {
+                    return new Response(null, {
+                        status: 304
+                    });
+                }
+            }
+            return response;
+        }
 
         if (context.path.startsWith('/assets/')) {
             let resFile = path.parse(context.path);
@@ -213,9 +229,12 @@ export class Router {
                 }
                 const headers = new Headers();
                 headers.set('ETag', fileInfo.weakEtag);
-                return new Response(Bun.file(filePath), {
+                let response = new Response(Bun.file(filePath), {
                     headers: headers
                 });
+                this.static_responses[context.path] = response;
+                return response;
+
             } else {
                 return new Response('File not found.', {
                     status: 404
