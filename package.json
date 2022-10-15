@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@kapsonfire/bun-bakery",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "author": "Dennis Dudek <admin@kapsonfire.de>",
   "repository": {
     "type": "git",
@@ -13,7 +13,7 @@
     "deepmerge-ts": "^4.2.1"
   },
   "devDependencies": {
-    "bun-types": "^0.1.8"
+    "bun-types": "^0.1.11"
   },
   "keywords": [
     "bun",

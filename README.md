@@ -75,7 +75,19 @@ will output
 {"usernames":["kapsonfire","jarred","tricked"]}
 ``` 
 
-
+### Websocket Server
+Bun-Bakery supports websocket endpoint export for Bun.serve({...}).
+Just export `WEBSOCKET` as Object registering the websocket hooks.
+In example: given `routes/websocket/user.ts`
+```typescript
+export const WEBSOCKET = {
+    message: (ws, message: string)  => {
+        console.log(typeof message);
+        ws.send('ECHO: ' + message);
+    }
+}
+```
+This will accept Websocket Connections on `ws://localhost:3000/websocket/user
 
 ### Handlers
 Inside the context variable you can access the native bun `Request` object inside `ctx.request`.

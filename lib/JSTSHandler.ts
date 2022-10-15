@@ -17,6 +17,10 @@ const JSTSHandler : IHandler = {
                         routerObject[method] = importedRoute[method];
                     }
                 });
+                if (typeof importedRoute['WEBSOCKET'] !== 'undefined') {
+                    routerObject['WEBSOCKET'] = importedRoute['WEBSOCKET'];
+                }
+
             }
         } catch (e) {
 

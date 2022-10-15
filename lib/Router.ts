@@ -9,7 +9,7 @@ import {RouterMethods} from "./RouterMethods";
 import {FileInfo} from "./FileInfo";
 import {IMiddleware} from "./IMiddleware";
 import TRouter from './TrekRouter';
-import { run, bench, baseline } from "mitata";
+
 function* walkSync(dir) {
     const files = fs.readdirSync(dir, {withFileTypes: true});
     for (const file of files) {
@@ -74,6 +74,10 @@ export class Router {
         return route.replace(regex, subst).replace(regexSpread, substSpread);
     }
 
+    private websocketConfig : { [key: string]: any } = {
+
+    };
+
 
     private async bake(): Promise<void> {
         let files = await getFiles(this.config.routesPath);
@@ -111,19 +115,28 @@ export class Router {
                             if(ro[method]) {
                                 this.trouter.add(method, routePath + parsed.ext, ro[method]);
                             }
+                            if(ro['WEBSOCKET']) {
+                                this.websocketConfig[routePath + parsed.ext] = ro['WEBSOCKET'];
+                            }
                         })
                     }
                     if ((this.EXT_HANDLER[parsed.ext]?.withoutExtension) ?? false) {
+                        let len = routePath.length;
+                        indexRoutePath = routePath.substring(0,len - (len>6?6:5));
                         RouterMethods.forEach(method => {
                             if(ro[method]) {
                                 if(base === 'index') {
-                                    let len = routePath.length;
-                                    indexRoutePath = routePath.substring(0,len - (len>6?6:5));
                                     this.trouter.add(method, indexRoutePath, ro[method])
                                 }
                                 this.trouter.add(method, routePath, ro[method])
                             }
-                        })
+                        });
+                        if(ro['WEBSOCKET']) {
+                            if(base === 'index') {
+                                this.websocketConfig[indexRoutePath] = ro['WEBSOCKET'];
+                            }
+                            this.websocketConfig[routePath] = ro['WEBSOCKET'];
+                        }
                     }
                 }
 
@@ -160,13 +173,14 @@ export class Router {
 
     async listen() {
 
-
-        Bun.serve({
+        let config = {
             fetch: this.serve.bind(this),
             port: this.config.port,
-        });
-
-
+            websockets: this.websocketConfig ?? {}
+        }
+        console.log(this.trouter);
+        console.log(config);
+        Bun.serve(config);
     }
 
 

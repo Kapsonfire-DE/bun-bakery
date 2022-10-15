@@ -160,6 +160,14 @@ export default class Router<T = any> {
     }
 
     add(method: string, path: string, handler: T) {
+
+        if(method === 'ANY') {
+            ['GET','PUT','PATCH','POST','DELETE'].forEach((m) => {
+                this.add(m, path, handler);
+            })
+            return;
+        }
+
         let [i, l, pnames] = [0, path.length, [] as string[]]
         let ch: number, j: number
 
