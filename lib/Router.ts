@@ -178,8 +178,6 @@ export class Router {
             port: this.config.port,
             websockets: this.websocketConfig ?? {}
         }
-        console.log(this.trouter);
-        console.log(config);
         Bun.serve(config);
     }
 
