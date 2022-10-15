@@ -10,10 +10,10 @@
   "description": "A file based router system for bun",
   "license": "MIT",
   "dependencies": {
-    "deepmerge-ts": "^4.2.1"
+    "deepmerge-ts": "^4.2.2"
   },
   "devDependencies": {
-    "bun-types": "^0.1.11"
+    "bun-types": "^0.2.0"
   },
   "keywords": [
     "bun",
