@@ -171,11 +171,11 @@ export class Router {
             fetch: this.serve.bind(this),
             port: this.config.port,
             websocket: {
-                open:       (ws)            => ws.data.__wsEndPoint.open?.apply(ws),
-                message:    (ws, message)   => ws.data.__wsEndPoint.message?.apply(ws, message),
-                close:      (ws)            => ws.data.__wsEndPoint.close?.apply(ws),
-                error:      (ws, ex)        => ws.data.__wsEndPoint.error?.apply(ws, ex),
-                drain:      (ws)            => ws.data.__wsEndPoint.drain?.apply(ws),
+                open:       (ws)            => ws.data.__wsEndPoint.open?.apply(ws, [ws]),
+                message:    (ws, message)   => ws.data.__wsEndPoint.message?.apply(ws, [ws,message]),
+                close:      (ws)            => ws.data.__wsEndPoint.close?.apply(ws, [ws]),
+                error:      (ws, ex)        => ws.data.__wsEndPoint.error?.apply(ws, [ws, ex]),
+                drain:      (ws)            => ws.data.__wsEndPoint.drain?.apply(ws, [ws]),
             }
         }
         Bun.serve(config);
