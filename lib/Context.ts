@@ -6,14 +6,17 @@ export class Context {
     request: Request;
     response: Response | null;
     params: { [key: string]: string|string[] } = {};
+    websocketEndpoint = null;
 
     readonly method: string;
     readonly headers: Request["headers"];
     readonly host: string;
     readonly path: string;
     readonly url: URL;
+    readonly server;
 
-    constructor(req: Request) {
+    constructor(req: Request, srv) {
+        this.server = srv;
         this.request = req;
         this.response = null;
 
@@ -49,5 +52,13 @@ export class Context {
 
     sendFile(path: string, init: ResponseInit = {}): void {
         this.response = new Response(Bun.file(path), init);
+    }
+
+
+    acceptWebsocketUpgrade({ data, headers} = {data:{}, headers:{}}) {
+        this.server.upgrade(this.request, {
+            data: {...data, request: this.request, __wsEndPoint: this.websocketEndpoint},
+            headers
+        });
     }
 }

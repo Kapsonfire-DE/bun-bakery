@@ -81,13 +81,38 @@ Just export `WEBSOCKET` as Object registering the websocket hooks.
 In example: given `routes/websocket/user.ts`
 ```typescript
 export const WEBSOCKET = {
-    message: (ws, message: string)  => {
-        console.log(typeof message);
+    message: (ws, message)  => {
+        console.log('RCV:', message);
         ws.send('ECHO: ' + message);
+    },
+    upgrade: (ctx: Context) => {
+        ctx.acceptWebsocketUpgrade();
+    }
+}
+```
+
+More detailed example:
+```typescript
+export const WEBSOCKET = {
+    message: (ws, message)  => {
+        console.log('RCV:', message);
+        ws.send('ECHO: ' + message);
+    },
+    upgrade: (ctx: Context) => {
+        ctx.acceptWebsocketUpgrade({
+            data: {
+                name: new URL(req.url).searchParams.get("name") || "Friend",
+            },
+            headers: {
+                'Set-Cookie': 'name=value'
+            }
+        });
     }
 }
 ```
 This will accept Websocket Connections on `ws://localhost:3000/websocket/user
+
+**NOTE**: Websocket Endpoints don't support params in the url.
 
 ### Handlers
 Inside the context variable you can access the native bun `Request` object inside `ctx.request`.
