@@ -211,7 +211,7 @@ export class Router {
         const context = new Context(req, srv);
 
 
-        if(req.headers.get('Connection').toLowerCase() === 'upgrade' && req.headers.get('Upgrade').toLowerCase() === 'websocket') {
+        if(req.headers.get('Connection')?.toLowerCase() === 'upgrade' && req.headers.get('Upgrade')?.toLowerCase() === 'websocket') {
             if(this.websocketConfig[context.path]) {
                 context.websocketEndpoint = this.websocketConfig[context.path];
 
