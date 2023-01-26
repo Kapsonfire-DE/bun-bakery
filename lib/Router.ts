@@ -10,7 +10,7 @@ import {FileInfo} from "./FileInfo";
 import {IMiddleware} from "./IMiddleware";
 import TRouter from './TrekRouter';
 
-function* walkSync(dir) {
+function* walkSync(dir): IterableIterator<string> {
     const files = fs.readdirSync(dir, {withFileTypes: true});
     for (const file of files) {
         if (file.isDirectory()) {
