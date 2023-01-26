@@ -1,5 +1,7 @@
 import {deepmerge} from "deepmerge-ts";
 
+
+const replaceURL = /^.*\/\/[^\/]+/;
 export class Context {
 
 
@@ -12,23 +14,42 @@ export class Context {
     readonly headers: Request["headers"];
     readonly host: string;
     readonly path: string;
-    readonly url: URL;
+
     readonly server;
+
+
+    private _url = null;
+    get url() : URL {
+        if(this._url === null) this._url = new URL(this.request.url);
+        return this._url;
+    }
+
+    get host() : string {
+        return this.url.host;
+    }
 
     constructor(req: Request, srv) {
         this.server = srv;
         this.request = req;
         this.response = null;
 
-        const url = new URL(req.url);
+
+        let pathname = req.url.replace(replaceURL, '');
+
+        const index = pathname.lastIndexOf("?");
+        if (index > -1) {
+            pathname = pathname.substring(0, index);
+        }
+
+
         this.method = req.method;
         this.headers = req.headers;
-        this.host = url.host;
-        this.path = url.pathname;
-        if(this.path.endsWith('/') && this.path.length > 1) {
+        this.path = pathname;
+
+        if(this.path.length > 1 && this.path.endsWith('/')) {
             this.path = this.path.substring(0, this.path.length-1);
         }
-        this.url = url;
+
 
         // noinspection JSIgnoredPromiseFromCall
         this.request.blob();

@@ -208,9 +208,7 @@ export class Router {
     }
 
     private async serve(req: Request, srv): Promise<Response> {
-        const context = new Context(req, srv);
-
-
+        let context = new Context(req, srv);
         if(req.headers.get('Connection')?.toLowerCase() === 'upgrade' && req.headers.get('Upgrade')?.toLowerCase() === 'websocket') {
             if(this.websocketConfig[context.path]) {
                 context.websocketEndpoint = this.websocketConfig[context.path];
