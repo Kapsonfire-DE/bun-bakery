@@ -153,16 +153,23 @@ export class Router {
         }
     }
 
+
+    private _promiseListen : Promise<void>;
+
+    awaitListen(): Promise<void> {
+        return this._promiseListen;
+    }
     constructor(options: RouterConfig) {
+        this._promiseListen = new Promise((resolve) => {
+            this.config = deepmerge(this.config, options);
+            this.config.routesPath = path.resolve(options.routesPath);
+            if (!fs.existsSync(this.config.routesPath)) {
+                throw new Error(`routesPath '${this.config.routesPath}' does not exist`)
+            }
+            this.EXT_HANDLER = {...this.EXT_HANDLER, ...this.config.customHandlers};
 
-        this.config = deepmerge(this.config, options);
-        this.config.routesPath = path.resolve(options.routesPath);
-        if (!fs.existsSync(this.config.routesPath)) {
-            throw new Error(`routesPath '${this.config.routesPath}' does not exist`)
-        }
-        this.EXT_HANDLER = {...this.EXT_HANDLER, ...this.config.customHandlers};
-
-        this.bake().then(_r => this.listen());
+            this.bake().then(_r => { this.listen(); resolve(); });
+        })
     }
 
     async listen() {

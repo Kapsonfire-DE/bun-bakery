@@ -7,3 +7,4 @@ const router = new Router({
     routesPath: import.meta.dir + '/routes/'
 })
 
+router.awaitListen().then(() => console.log('run'));
