@@ -159,6 +159,8 @@ export class Router {
     awaitListen(): Promise<void> {
         return this._promiseListen;
     }
+
+    private listening: boolean = false;
     constructor(options: RouterConfig) {
         this._promiseListen = new Promise((resolve) => {
             this.config = deepmerge(this.config, options);
@@ -186,6 +188,7 @@ export class Router {
             }
         }
         Bun.serve(config);
+        this.listening = true;
     }
 
 
