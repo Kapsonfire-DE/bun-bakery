@@ -52,23 +52,27 @@ export class Context {
 
 
         // noinspection JSIgnoredPromiseFromCall
-        this.request.blob();
+        //this.request.blob();
     }
 
     sendResponse(res: Response): void {
         this.response = res;
     }
 
+    /**
+     * @deprecated
+     * @see html
+     */
     sendHTML(htmlCode: string, init: ResponseInit = {}): void {
-        this.response = new Response(htmlCode, deepmerge(init, { headers: {
-                'Content-Type': 'text/html'
-            }}));
+        this.html(htmlCode, init);
     }
 
+    /**
+     * @deprecated
+     * @see json
+     */
     sendAsJson(data: any, init: ResponseInit = {}): void {
-        this.response = new Response(JSON.stringify(data), deepmerge(init, { headers: {
-                'Content-Type': 'application/json'
-            }}));
+       this.json(data, init);
     }
 
     sendFile(path: string, init: ResponseInit = {}): void {
@@ -76,10 +80,26 @@ export class Context {
     }
 
 
+
     acceptWebsocketUpgrade({ data, headers} = {data:{}, headers:{}}) {
         this.server.upgrade(this.request, {
             data: {...data, request: this.request, __wsEndPoint: this.websocketEndpoint},
             headers
         });
+    }
+
+    html(htmlCode: string, init: ResponseInit = {}): void {
+        this.response = new Response(htmlCode, deepmerge(init, { headers: {
+                'Content-Type': 'text/html'
+        }}));
+    }
+    json(data: any, init: ResponseInit = {}): void {
+        this.response = new Response(JSON.stringify(data), deepmerge(init, { headers: {
+                'Content-Type': 'application/json'
+            }}));
+    }
+
+    text(data: string, init: ResponseInit = {}) {
+        this.response = new Response(data, init);
     }
 }

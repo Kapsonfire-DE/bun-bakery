@@ -1,5 +1,5 @@
 import {Context} from "../../lib"
 
 export async function GET(ctx: Context) {
-    ctx.sendAsJson({});
+    ctx.json({a: 1});
 }

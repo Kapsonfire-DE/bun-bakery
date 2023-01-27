@@ -34,6 +34,7 @@ export type RouterConfig = {
     routesPath?: string;
     assetsPath?: string;
     customHandlers?: { [key: string]: IHandler }
+    autoListen?: boolean;
 }
 
 
@@ -62,7 +63,8 @@ export class Router {
         port: 3000,
         routesPath: './routes',
         assetsPath: './assets',
-        customHandlers: {}
+        customHandlers: {},
+        autoListen: true
     }
 
 
@@ -170,13 +172,12 @@ export class Router {
             }
             this.EXT_HANDLER = {...this.EXT_HANDLER, ...this.config.customHandlers};
 
-            this.bake().then(_r => { this.listen(); resolve(); });
+            this.bake().then(_r => { if(this.config.autoListen) this.listen(); resolve(); });
         })
     }
 
-    async listen() {
-
-        let config = {
+    getListenConfig() {
+        return {
             fetch: this.serve.bind(this),
             port: this.config.port,
             websocket: {
@@ -187,7 +188,10 @@ export class Router {
                 drain:      (ws)            => ws.data.__wsEndPoint.drain?.apply(ws, [ws]),
             }
         }
-        Bun.serve(config);
+    }
+
+    async listen() {
+        Bun.serve(this.getListenConfig());
         this.listening = true;
     }
 
@@ -233,19 +237,22 @@ export class Router {
             }
         }
 
-        if (this.static_responses[context.path]) {
-            let response = this.static_responses[context.path];
-            if (req.headers.has('If-None-Match')) {
-                if (req.headers.get('If-None-Match') === response.headers.get('ETag')) {
-                    return new Response(null, {
-                        status: 304
-                    });
-                }
-            }
-            return response;
-        }
+
 
         if (context.path.startsWith('/assets/')) {
+
+            if (this.static_responses[context.path]) {
+                let response = this.static_responses[context.path];
+                if (req.headers.has('If-None-Match')) {
+                    if (req.headers.get('If-None-Match') === response.headers.get('ETag')) {
+                        return new Response(null, {
+                            status: 304
+                        });
+                    }
+                }
+                return response;
+            }
+
             let resFile = path.parse(context.path);
             let filePath = this.config.assetsPath + resFile.dir.substring('/assets'.length) + resFile.name;
             let fileInfo = FileInfo.getInfo(filePath);
