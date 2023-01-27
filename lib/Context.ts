@@ -65,7 +65,7 @@ export class Context {
             }}));
     }
 
-    sendAsJson(data: any, init: ResponseInit = {}): void {
+    sendAsJSON(data: any, init: ResponseInit = {}): void {
         this.response = new Response(JSON.stringify(data), deepmerge(init, { headers: {
                 'Content-Type': 'application/json'
             }}));
