@@ -59,8 +59,8 @@ export async function GET(ctx: Context) {
 ``` 
 will output `hello kapsonfire!`
 
-### Spread Paramaters
-Routes can also have wildcard/spread paramaters.
+### Spread Parameters
+Routes can also have wildcard/spread parameters.
 In example: given `routes/users/[...usernames].ts` and open `http://localhost:3000/users/kapsonfire/jarred/tricked`
 ```typescript
 import {Context} from "@kapsonfire/bun-bakery"
